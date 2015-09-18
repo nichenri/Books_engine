@@ -1,0 +1,35 @@
+<h1>所有している本一覧</h1>
+
+
+<p><%= link_to "所有している本の追加", new_stock_path %></p>
+
+<h2>所有している本一覧</h2>
+
+<table rules="all">
+    <thead>
+      <tr>
+        <th>タイトル</th>
+        <th>著者</th>
+        <th>出版社</th>
+        <th>分野</th>
+        <th>編集 削除</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @stocks.each do |stock| %>
+      <tr>
+        <td><%= stock.book.title %> </td>
+        <td><%= stock.book.author.author_name %>
+        <td><%= stock.book.publisher.publisher_name %>
+        <td><%= stock.book.genre.genre_name %>
+        <td><%= stock.updated_at %></td>
+        <td>
+            <%= link_to "編集", edit_stock_path(stock.id) %>
+            <%= link_to "削除", stock_path(stock.id), method: :delete, data: {confirm: "本当に削除しますか？"} %>
+        </td>
+      </tr>
+    </tbody>
+  <% end %>
+</table>
+

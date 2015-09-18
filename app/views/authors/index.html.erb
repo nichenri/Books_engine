@@ -1,0 +1,30 @@
+<h1>著者一覧</h1>
+
+
+<p><%= link_to "著者の追加", new_author_path %></p>
+
+<h2>著者一覧</h2>
+
+<table rules="all">
+    <thead>
+      <tr>
+        <th>著者名</th>
+        <th>更新日時</th>
+        <th>編集 削除</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @authors.each do |author| %>
+      <tr>
+        <td><%= author.author_name %> </td>
+        <td><%= author.updated_at %></td>
+        <td>
+            <%= link_to "編集", edit_author_path(author.id) %>
+            <%= link_to "削除", author_path(author.id), method: :delete, data: {confirm: "本当に削除しますか？"} %>
+        </td>
+      </tr>
+    </tbody>
+  <% end %>
+</table>
+

@@ -1,0 +1,15 @@
+<h1> 所有している本名の編集 </h1>
+
+<p><%= link_to "所有している本一覧へ戻る", stocks_path %></p>
+<br>
+<%= form_for @stock do |f| %>
+  <p>
+  <%= f.label :新しい所有している本名 %><br>
+  <%= f.text_field :book_id %>
+  </p>
+
+  <p>
+  <%= f.submit :所有している本名の編集 %>
+  </p>
+
+<% end %>

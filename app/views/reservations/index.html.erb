@@ -1,0 +1,40 @@
+<h1>予約状況一覧</h1>
+
+<table rules="all">
+    <thead>
+      <tr>
+        <th>ユーザー</th>
+        <th>借りた本のid</th>
+        <th>状態</th>
+        <th>状態の変更</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @reservations.each do |reservation| %>
+      <tr>
+        <td><%= reservation.user.name %> </td>
+        <td><%= reservation.stock.id %></td>
+        <td>
+          <% case reservation.reservation_status_id %>
+          <% when 1 %>
+            <p>予約中</p>
+          <% when 2 %>
+            <p>貸出し中</p>
+          <% when 3 %>
+            <p>貸出し期限切れ</p>
+          <% when 4 %>
+            <p>返却済み</p>
+          <% end %>
+        </td>
+        <td>
+          <%= form_for reservation, :url => book_stock_reservation_path(@book.id, @stock.id, reservation.id) do |f| %>
+            <%= f.select :reservation_status_id, {"予約中" => "1", "貸出し中" => "2", "貸出し期限切れ" => "3", "返却済み" => "4"}%>
+            <%= f.submit :更新 %>
+          <% end %>
+        </td>
+      </tr>
+    </tbody>
+  <% end %>
+</table>
+

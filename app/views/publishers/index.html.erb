@@ -1,0 +1,30 @@
+<h1>出版社一覧</h1>
+
+
+<p><%= link_to "出版社の追加", new_publisher_path %></p>
+
+<h2>出版社一覧</h2>
+
+<table rules="all">
+    <thead>
+      <tr>
+        <th>出版社名</th>
+        <th>更新日時</th>
+        <th>編集 削除</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @publishers.each do |publisher| %>
+      <tr>
+        <td><%= publisher.publisher_name %> </td>
+        <td><%= publisher.updated_at %></td>
+        <td>
+            <%= link_to "編集", edit_publisher_path(publisher.id) %>
+            <%= link_to "削除", publisher_path(publisher.id), method: :delete, data: {confirm: "本当に削除しますか？"} %>
+        </td>
+      </tr>
+    </tbody>
+  <% end %>
+</table>
+
