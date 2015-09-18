@@ -1,5 +1,10 @@
 class NewBooksController < ApplicationController
 
+
+  def index
+    @applications = Application.all
+  end
+
   def new
     @new_book = NewBook.new
   end
@@ -10,7 +15,6 @@ class NewBooksController < ApplicationController
     @new_book.save
     redirect_to books_path
   end
-
 
 
 

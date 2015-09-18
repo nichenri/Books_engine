@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     :registrations => "users/registrations",
     :passwords     => "users/passwords"
   }
+
   resources :books do 
     resources :stocks, except: [:show] do
       resources :reservations, only: [:index, :create, :update, :edit, :destroy]
@@ -26,7 +27,8 @@ Rails.application.routes.draw do
   resources :reservation_statuses, except: [:show]
   resources :application_statuses, except: [:show]
   resources :new_books, except: [:show] do
-    resources :applications, except: [:show]  end
+    resources :applications, except: [:show]  
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
