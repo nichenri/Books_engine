@@ -10,6 +10,6 @@ class User < ActiveRecord::Base
   has_many :bookmarks
   has_many :bookmark_books, through: :bookmarks, :source => 'book'
 
-  has_many :applications
-  has_many :new_books, through: :applications
+  has_many :additions
+  has_many :new_books, through: :additions
 end

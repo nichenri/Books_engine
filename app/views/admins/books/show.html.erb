@@ -1,0 +1,57 @@
+<h1> 詳細情報 </h1>
+
+<p><%= link_to "図書検索画面へ戻る", admins_top_index_path %></p>
+<p><%= link_to "この図書情報の編集", edit_admins_book_path(@book.id)%></p>
+
+<br>
+
+
+<table rules="all" border="3">
+  <tr>
+    <td>タイトル</td>
+    <td><strong><%= @book.title %></strong></td>
+  </tr>
+
+  <tr>
+    <td>著者</td>
+    <td><%= @book.author.author_name %></td>
+  </tr>
+
+  <tr>
+    <td>出版社</td>
+    <td><%= @book.publisher.publisher_name %></td>
+  </tr>
+
+  <tr>
+    <td>分野</td>
+    <td><%= @book.genre.genre_name %></td>
+  </tr>
+
+  <tr>
+    <td>図書館保有状況</td>
+    <td>合計保有数: <%= @stocks.count %><br>
+    <ul>
+      <% @stocks.each do |stock| %>
+        <li>
+          <%= sprintf("%08d", stock.id) %>
+          <% if stock.reservations.find_by(reservation_status: 1..3) %>
+            貸出し中・予約待ち
+          <% else %>
+            在庫あり
+          <% end %>
+        </li>
+      <% end %>
+    </ul></td>
+  </tr>
+</table>
+
+<h2>この本に対するレビュー一覧</h2>
+<ul>
+  <% @reviews.each do |review| %>
+    <li>
+      <%= review.updated_at %>
+      <%= review.content %>
+    </li>
+  <% end %>
+</ul>
+

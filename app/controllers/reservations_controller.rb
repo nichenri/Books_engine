@@ -9,11 +9,12 @@ class ReservationsController < ApplicationController
 
 
   def create
+    @user = current.user
     @book = Book.find(params[:book_id])
     @stock = @book.stocks.find(params[:stock_id])
     @reservation = @stock.reservations.new(user_id: current_user.id, reservation_status_id: 1)
     if @reservation.save
-      redirect_to book_path(@book.id)
+      redirect_to users_book_path(@book.id)
     else
       render 'new'
     end
@@ -35,7 +36,7 @@ class ReservationsController < ApplicationController
     @stock = @book.stocks.find(params[:stock_id])
     @reservation = @stock.reservations.find(params[:id])
     @reservation.destroy
-    redirect_to book_path(@book.id)
+    redirect_to users_book_path(@book.id)
   end
 
 

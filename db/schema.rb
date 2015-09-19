@@ -11,7 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150918084000) do
+ActiveRecord::Schema.define(version: 20150919080300) do
+
+  create_table "addition_statuses", force: :cascade do |t|
+    t.string   "status_name", limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  create_table "additions", force: :cascade do |t|
+    t.integer  "user_id",            limit: 4
+    t.integer  "new_book_id",        limit: 4
+    t.date     "arrive_at"
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.integer  "addition_status_id", limit: 4, default: 1
+  end
+
+  add_index "additions", ["addition_status_id"], name: "index_additions_on_addition_status_id", using: :btree
+  add_index "additions", ["new_book_id"], name: "index_additions_on_new_book_id", using: :btree
+  add_index "additions", ["user_id"], name: "index_additions_on_user_id", using: :btree
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false
@@ -30,25 +49,6 @@ ActiveRecord::Schema.define(version: 20150918084000) do
 
   add_index "admins", ["email"], name: "index_admins_on_email", unique: true, using: :btree
   add_index "admins", ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true, using: :btree
-
-  create_table "application_statuses", force: :cascade do |t|
-    t.string   "status_name", limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-  end
-
-  create_table "applications", force: :cascade do |t|
-    t.integer  "user_id",               limit: 4
-    t.integer  "new_book_id",           limit: 4
-    t.date     "arrive_at"
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
-    t.integer  "application_status_id", limit: 4, default: 1
-  end
-
-  add_index "applications", ["application_status_id"], name: "index_applications_on_application_status_id", using: :btree
-  add_index "applications", ["new_book_id"], name: "index_applications_on_new_book_id", using: :btree
-  add_index "applications", ["user_id"], name: "index_applications_on_user_id", using: :btree
 
   create_table "authors", force: :cascade do |t|
     t.string   "author_name", limit: 255
@@ -160,9 +160,9 @@ ActiveRecord::Schema.define(version: 20150918084000) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
-  add_foreign_key "applications", "application_statuses"
-  add_foreign_key "applications", "new_books"
-  add_foreign_key "applications", "users"
+  add_foreign_key "additions", "addition_statuses"
+  add_foreign_key "additions", "new_books"
+  add_foreign_key "additions", "users"
   add_foreign_key "bookmarks", "books"
   add_foreign_key "bookmarks", "users"
   add_foreign_key "books", "authors"

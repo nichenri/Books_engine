@@ -2,7 +2,7 @@ class NewBooksController < ApplicationController
 
 
   def index
-    @applications = Application.all
+    @additions = Addition.all
   end
 
   def new
@@ -11,7 +11,7 @@ class NewBooksController < ApplicationController
 
   def create
     @new_book = NewBook.new(new_book_params)
-    @new_book.applications.build(user_id: current_user.id)
+    @new_book.additions.build(user_id: current_user.id)
     @new_book.save
     redirect_to books_path
   end

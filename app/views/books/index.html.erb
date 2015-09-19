@@ -1,6 +1,6 @@
 <h1>図書館へようこそ</h1>
 
-<p><%= link_to "図書の追加", new_book_path %></p>
+<p><%= link_to "図書の追加", new_book_path if current_admin %></p>
 <p><%= link_to "新規図書購入申請", new_new_book_path %></p>
 <p><%= link_to "新規図書購入申請一覧", new_books_path %></p>
 

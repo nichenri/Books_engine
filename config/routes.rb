@@ -1,4 +1,22 @@
 Rails.application.routes.draw do
+  namespace :users do
+    get 'top/index'
+    resources :books, only: [:show]
+  end
+
+  namespace :admins do
+    get 'top/index'
+    resources :authors, except: [:show]
+    resources :genres, except: [:show]
+    resources :publishers, except: [:show]
+    resources :books, except: [:index] do
+      resources :stocks, except: [:show]
+    end
+    resources :reservations, only: [:update]
+    resources :additions, only: [:update]
+    resources :new_books, only: [:index]
+  end
+
   root 'books#index'
 
   devise_for :admins, :controllers => {
@@ -13,21 +31,18 @@ Rails.application.routes.draw do
     :passwords     => "users/passwords"
   }
 
-  resources :books do 
+  resources :books, only: [:index, :show] do 
     resources :stocks, except: [:show] do
-      resources :reservations, only: [:index, :create, :update, :edit, :destroy]
+      resources :reservations, only: [:index, :create, :destroy]
     end
     resources :reviews, only: [:create, :update, :edit, :destroy]
     resources :bookmarks, only: [:create, :update, :edit, :destroy]
   end
 
-  resources :authors, except: [:show]
-  resources :genres, except: [:show]
-  resources :publishers, except: [:show]
   resources :reservation_statuses, except: [:show]
-  resources :application_statuses, except: [:show]
-  resources :new_books, except: [:show] do
-    resources :applications, except: [:show]  
+  resources :addition_statuses, except: [:show]
+  resources :new_books, except: [:show, :index] do
+    resources :additions, except: [:show, :update]  
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
