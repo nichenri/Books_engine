@@ -1,4 +1,4 @@
-class Admins::ReservationsController < ApplicationController
+class Admins::ReservationsController < Admins::ApplicationController
 
   def update
     @admin = current_admin

@@ -5,9 +5,9 @@
 
 
 <% if @user_bookmark %>
-  <%= link_to "ブックマークの取り消し", book_bookmark_path(@user_bookmark.book_id, @user_bookmark.id), method: :delete, data: {confirm: "Are you sure?"} %><br>
+  <%= link_to "ブックマークの取り消し", users_book_bookmark_path(@user_bookmark.book_id, @user_bookmark.id), method: :delete, data: {confirm: "Are you sure?"} %><br>
 <% else %>
-  <%= form_for [@book, @book.bookmarks.build] do |f| %>
+  <%= form_for @bookmark, url: users_book_bookmarks_path(@book.id) do |f| %>
   <%= f.submit :ブックマークに入れる %>
     <br>
   <% end %>
@@ -48,13 +48,13 @@
             在庫あり
           <% end %>
           <% if stock.reservations.find_by(user_id: current_user.id, reservation_status_id: 1) %>
-            <br><%= link_to "予約の削除", book_stock_reservation_path(stock.book_id, stock.id, stock.reservations.find_by(user_id: current_user.id, reservation_status_id: 1).id), method: :delete, data: {confirm: "Are you sure?"} %><br>
+            <br><%= link_to "予約の削除", users_book_stock_reservation_path(stock.book_id, stock.id, stock.reservations.find_by(user_id: current_user.id, reservation_status_id: 1).id), method: :delete, data: {confirm: "Are you sure?"} %><br>
             <% else if stock.reservations.find_by(user_id: current_user.id, reservation_status_id: 2) %>
               貸出し中
               <% else if stock.reservations.find_by(user_id: current_user.id, reservation_status_id: 3) %>
                 貸出し期限切れ・すぐに本を返却してください
                 <% else %>
-                <%= form_for [stock.book, stock, stock.reservations.build] do |f| %>
+                <%= form_for @reservation, url: users_book_stock_reservations_path(@book.id, stock.id) do |f| %>
                   <% f.hidden_field :reservation_status, :value => 1 %>
                   <%= f.submit :この本を予約する %>
                 <% end %>
@@ -73,14 +73,14 @@
   <% @reviews.each do |review| %>
     <li>
       <%= review.updated_at %>
-      <%= link_to "編集", edit_book_review_path(review.book_id, review.id) %>
-      <%= link_to "削除", book_review_path(review.book_id, review.id), method: :delete, data: {confirm: "Are you sure?"} %><br>
+      <%= link_to "編集", edit_users_book_review_path(review.book_id, review.id) %>
+      <%= link_to "削除", users_book_review_path(review.book_id, review.id), method: :delete, data: {confirm: "Are you sure?"} %><br>
       <%= review.content %>
     </li>
     <% end %>
 
     <li>
-      <%= form_for [@book, @book.reviews.build] do |f| %>
+      <%= form_for @review, url: users_book_reviews_path(@book.id) do |f| %>
     <p>
     <%= f.text_field :content %>
     </p>

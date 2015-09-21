@@ -6,11 +6,18 @@
 <h2>図書一覧</h2>
 
 
-<%= search_form_for @search do |f| %>
+<%= search_form_for @book_search, url: users_top_index_path do |f| %>
+  <%= f.condition_fields do |c| %>
   <div class="field">
-    <%= f.label :title_cont, "Title contains" %>
-    <%= f.search_field :title_cont %>
+    <%= c.attribute_fields do |a| %>
+      <%= a.attribute_select %>
+    <% end %>
+    <%= c.predicate_select %>
+    <%= c.value_fields do |v| %> 
+      <%= v.text_field :value %>
+    <% end %>
   </div>
+  <% end %>
   <div class="actions"><%= f.submit "Search" %></div>
 <% end %>
 
@@ -45,6 +52,20 @@
 </table>
 
 <h2>本の貸出し状態</h2>
+<%= search_form_for @reservation_search, url: users_top_index_path do |f| %>
+  <%= f.condition_fields do |c| %>
+  <div class="field">
+    <%= c.attribute_fields do |a| %>
+      <%= a.attribute_select %>
+    <% end %>
+    <%= c.predicate_select %>
+    <%= c.value_fields do |v| %> 
+      <%= v.text_field :value %>
+    <% end %>
+  </div>
+  <% end %>
+  <div class="actions"><%= f.submit "Search" %></div>
+<% end %>
 <table rules="all">
     <thead>
       <tr>
@@ -107,12 +128,3 @@
     </tbody>
   <% end %>
 </table>
-
-
-
-
-
-
-
-
-

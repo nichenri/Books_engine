@@ -1,7 +1,17 @@
 Rails.application.routes.draw do
+  root 'users/top#index'
   namespace :users do
     get 'top/index'
-    resources :books, only: [:show]
+    resources :books, only: [:show] do
+      resources :reviews, only: [:create, :update, :edit, :destroy]
+      resources :bookmarks, only: [:create, :destroy]
+      resources :stocks, only: [:show] do
+        resources :reservations, only: [:create, :destroy]
+      end
+    end
+    resources :new_books, only: [:new, :create] do
+      resources :additions, only: [:create]  
+    end
   end
 
   namespace :admins do
@@ -10,14 +20,13 @@ Rails.application.routes.draw do
     resources :genres, except: [:show]
     resources :publishers, except: [:show]
     resources :books, except: [:index] do
-      resources :stocks, except: [:show]
+      resources :stocks, only: [:create, :destroy]
     end
     resources :reservations, only: [:update]
     resources :additions, only: [:update]
     resources :new_books, only: [:index]
   end
 
-  root 'books#index'
 
   devise_for :admins, :controllers => {
     :sessions      => "admins/sessions",
@@ -31,19 +40,6 @@ Rails.application.routes.draw do
     :passwords     => "users/passwords"
   }
 
-  resources :books, only: [:index, :show] do 
-    resources :stocks, except: [:show] do
-      resources :reservations, only: [:index, :create, :destroy]
-    end
-    resources :reviews, only: [:create, :update, :edit, :destroy]
-    resources :bookmarks, only: [:create, :update, :edit, :destroy]
-  end
-
-  resources :reservation_statuses, except: [:show]
-  resources :addition_statuses, except: [:show]
-  resources :new_books, except: [:show, :index] do
-    resources :additions, except: [:show, :update]  
-  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

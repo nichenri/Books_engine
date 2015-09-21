@@ -1,4 +1,4 @@
-class Admins::StocksController < ApplicationController
+class Admins::StocksController < Admins::ApplicationController
   before_action :set_stock, only: [:edit, :update, :destroy] 
 
   def create
@@ -11,20 +11,9 @@ class Admins::StocksController < ApplicationController
     end
   end
 
-  def edit
-  end
-
-  def update
-    if @stock.update(stock_params) 
-      redirect_to stocks_path
-    else 
-      render 'edit'
-    end
-  end
-
   def destroy
     @stock.destroy
-    redirect_to stocks_path
+    redirect_to admins_top_index_path
   end
 
   private

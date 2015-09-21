@@ -1,4 +1,4 @@
-class Admins::NewBooksController < ApplicationController
+class Admins::NewBooksController < Admins::ApplicationController
 
   def index
     @additions = Addition.all

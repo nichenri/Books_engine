@@ -1,9 +1,4 @@
-class NewBooksController < ApplicationController
-
-
-  def index
-    @additions = Addition.all
-  end
+class Users::NewBooksController < Users::ApplicationController
 
   def new
     @new_book = NewBook.new
@@ -13,10 +8,8 @@ class NewBooksController < ApplicationController
     @new_book = NewBook.new(new_book_params)
     @new_book.additions.build(user_id: current_user.id)
     @new_book.save
-    redirect_to books_path
+    redirect_to new_users_new_book_path
   end
-
-
 
 
 

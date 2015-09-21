@@ -1,4 +1,4 @@
-class Admins::AdditionsController < ApplicationController
+class Admins::AdditionsController < Admins::ApplicationController
 
   def update
     @admin = current_admin

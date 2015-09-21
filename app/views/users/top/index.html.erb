@@ -1,14 +1,21 @@
 <h1>図書館へようこそ</h1>
 
-<p><%= link_to "新規図書購入申請", new_new_book_path %></p>
+<p><%= link_to "新規図書購入申請", new_users_new_book_path %></p>
 
 <h2>図書一覧</h2>
 
-<%= search_form_for @search do |f| %>
+<%= search_form_for @search, url: users_top_index_path do |f| %>
+  <%= f.condition_fields do |c| %>
   <div class="field">
-    <%= f.label :title_cont, "Title contains" %>
-    <%= f.search_field :title_cont %>
+    <%= c.attribute_fields do |a| %>
+      <%= a.attribute_select %>
+    <% end %>
+    <%= c.predicate_select %>
+    <%= c.value_fields do |v| %> 
+      <%= v.text_field :value %>
+    <% end %>
   </div>
+  <% end %>
   <div class="actions"><%= f.submit "Search" %></div>
 <% end %>
 
@@ -41,26 +48,28 @@
         <th>タイトル</th>
         <th>著者</th>
         <th>状態</th>
+        <th>最終更新日</th>
       </tr>
     </thead>
     <tbody>
       <% @reservations.each do |reservation| %>
       <tr>
-        <td><%= reservation.stock.id %></td>
-        <td><%= reservation.stock.book.title %></td>
+        <td><%= sprintf("%08d", reservation.stock.id) %></td>
+        <td><%= link_to reservation.stock.book.title, users_book_path(reservation.stock.book_id) %></td>
         <td><%= reservation.stock.book.author.author_name %></td>
         <td>
           <% case reservation.reservation_status_id %>
           <% when 1 %>
-            <p>予約中</p>
+            予約中
           <% when 2 %>
-            <p>貸出し中</p>
+            貸出し中
           <% when 3 %>
-            <p>貸出し期限切れ</p>
+            貸出し期限切れ
           <% when 4 %>
-            <p>返却済み</p>
+            返却済み
           <% end %>
         </td>
+        <td><%= reservation.updated_at %></td>
       </tr>
     </tbody>
   <% end %>
@@ -78,7 +87,7 @@
     <tbody>
       <% @bookmarks.each do |bookmark| %>
       <tr>
-        <td><%= bookmark.book.title %></td>
+        <td><%= link_to bookmark.book.title, users_book_path(bookmark.book_id) %> </td>
         <td><%= bookmark.book.author.author_name %></td>
         <td><%= bookmark.book.publisher.publisher_name %></td>
       </tr>
