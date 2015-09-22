@@ -1,5 +1,4 @@
 class Admins::StocksController < Admins::ApplicationController
-  before_action :set_stock, only: [:edit, :update, :destroy] 
 
   def create
     @book = Book.find(params[:book_id])
@@ -12,18 +11,16 @@ class Admins::StocksController < Admins::ApplicationController
   end
 
   def destroy
+    @stock = Stock.find(params[:id])
     @stock.destroy
     redirect_to admins_top_index_path
   end
+
 
   private
 
     def stock_params
       params.require(:stock).permit(:book_id)
-    end
-
-    def set_stock
-      @stock = Stock.find(params[:id])
     end
 
 end

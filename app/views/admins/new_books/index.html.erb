@@ -1,7 +1,19 @@
-<h1>新規図書購入申請一覧</h1>
-
-
+<h2>新規図書購入申請一覧</h2>
 <p><%= link_to "図書検索画面へ", admins_top_index_path %></p>
+
+<%= search_form_for @addition_search, url: admins_new_books_path do |f| %>
+  <div class="field">
+    <%= f.label :user_name_cont, "ユーザ名" %>
+    <%= f.text_field :user_name_cont %><br>
+    <%= f.label :new_book_title_cont, "タイトル" %>
+    <%= f.text_field :new_book_title_cont %><br>
+    <%= f.label :new_book_author_cont, "著者" %>
+    <%= f.text_field :new_book_author_cont %><br>
+    <%= f.label :new_book_publisher, "出版社" %>
+    <%= f.text_field :new_book_publisher_cont %><br>
+  </div>
+  <div class="actions"><%= f.submit "Search" %></div>
+<% end %>
 
 
 <table rules="all">
@@ -28,11 +40,11 @@
         <td>
           <% case addition.addition_status_id %>
           <% when 1 %>
-            <p>承認中</p>
+            承認中
           <% when 2 %>
-            <p>不許可</p>
+            不許可
           <% when 3 %>
-            <p>許可</p>
+            許可
           <% end %>
         </td>
         <td>

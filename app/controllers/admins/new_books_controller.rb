@@ -1,7 +1,8 @@
 class Admins::NewBooksController < Admins::ApplicationController
 
   def index
-    @additions = Addition.all
+    @addition_search = Addition.search(params[:q])
+    @additions = @addition_search.result
   end
 
 end

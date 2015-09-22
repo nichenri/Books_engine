@@ -12,9 +12,9 @@ class Users::NewBooksController < Users::ApplicationController
   end
 
 
-
   private 
     def new_book_params
       params.require(:new_book).permit(:title, :author, :publisher, :genre_id)
     end
+
 end

@@ -1,15 +1,17 @@
 class Admins::PublishersController < Admins::ApplicationController
   before_action :set_publisher, only: [:edit, :update, :destroy] 
+  before_action :set_admin, only: [:create, :update, :destroy]
+
+
   def index
     @publishers = Publisher.all
     @publisher = Publisher.new
   end
 
   def create
-    @admin = current_admin
     @publisher = Publisher.new(publisher_params)
     if @publisher.save 
-      redirect_to admins_publishers_path(@admin.id)
+      redirect_to admins_publishers_path
     else 
       render 'new'
     end
@@ -19,21 +21,24 @@ class Admins::PublishersController < Admins::ApplicationController
   end
 
   def update
-    @admin = current_admin
     if @publisher.update(publisher_params) 
-      redirect_to admins_publishers_path(@admin.id)
+      redirect_to admins_publishers_path
     else 
       render 'edit'
     end
   end
 
   def destroy
-    @admin = current_admin
     @publisher.destroy
-    redirect_to admins_publishers_path(@admin.id)
+    redirect_to admins_publishers_path
   end
 
+
   private
+
+    def set_admin
+      @admin = current_admin
+    end
 
     def publisher_params
       params.require(:publisher).permit(:publisher_name)

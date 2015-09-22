@@ -2,6 +2,7 @@ class Users::BooksController < Users::ApplicationController
   before_action :set_book,  only: [:show]
 
   def show
+    @user = current_user
     @book = Book.find(params[:id])
     @stocks = @book.stocks
     @reviews = @book.reviews.where(params[:id])

@@ -16,13 +16,14 @@ Rails.application.routes.draw do
 
   namespace :admins do
     get 'top/index'
+    resources :bookmarks, only: [:index]
     resources :authors, except: [:show]
     resources :genres, except: [:show]
     resources :publishers, except: [:show]
     resources :books, except: [:index] do
       resources :stocks, only: [:create, :destroy]
     end
-    resources :reservations, only: [:update]
+    resources :reservations, only: [:index, :update]
     resources :additions, only: [:update]
     resources :new_books, only: [:index]
   end

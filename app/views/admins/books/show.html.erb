@@ -1,4 +1,4 @@
-<h1> 詳細情報 </h1>
+<h2> 詳細情報 </h2>
 
 <p><%= link_to "図書検索画面へ戻る", admins_top_index_path %></p>
 <p><%= link_to "この図書情報の編集", edit_admins_book_path(@book.id)%></p>
@@ -45,11 +45,12 @@
   </tr>
 </table>
 
-<h2>この本に対するレビュー一覧</h2>
+<h3>この本に対するレビュー一覧</h3>
 <ul>
   <% @reviews.each do |review| %>
     <li>
-      <%= review.updated_at %>
+      <%= review.user.name %> |
+      <%= review.updated_at %><br>
       <%= review.content %>
     </li>
   <% end %>

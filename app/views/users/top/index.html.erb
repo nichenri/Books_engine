@@ -3,19 +3,17 @@
 <p><%= link_to "新規図書購入申請", new_users_new_book_path %></p>
 
 <h2>図書一覧</h2>
-
-<%= search_form_for @search, url: users_top_index_path do |f| %>
-  <%= f.condition_fields do |c| %>
+<%= search_form_for @book_search, url: admins_top_index_path do |f| %>
   <div class="field">
-    <%= c.attribute_fields do |a| %>
-      <%= a.attribute_select %>
-    <% end %>
-    <%= c.predicate_select %>
-    <%= c.value_fields do |v| %> 
-      <%= v.text_field :value %>
-    <% end %>
+    <%= f.label :title_cont, "タイトル" %>
+    <%= f.text_field :title_cont %><br>
+    <%= f.label :author_author_name_cont, "著者" %>
+    <%= f.text_field :author_author_name_cont %><br>
+    <%= f.label :publisher_publisher_name_cont, "出版社" %>
+    <%= f.text_field :publisher_publisher_name_cont %><br>
+    <%= f.label :genre_genre_name_cont, "分野" %>
+    <%= f.text_field :genre_genre_name_cont %><br>
   </div>
-  <% end %>
   <div class="actions"><%= f.submit "Search" %></div>
 <% end %>
 
@@ -25,6 +23,10 @@
         <th>タイトル</th>
         <th>著者</th>
         <th>出版社</th>
+        <th>分野</th>
+        <th>保有冊数</th>
+        <th>貸出冊数</th>
+        <th>在庫冊数</th>
       </tr>
     </thead>
 
@@ -34,6 +36,18 @@
         <td><%= link_to book.title, users_book_path(book.id) %> </td>
         <td><%= book.author.author_name %></td>
         <td><%= book.publisher.publisher_name %></td>
+        <td><%= book.genre.genre_name %></td>
+        <td><%= book.stocks.count %></td>
+        <% array = [] %>
+        <td>
+          <% book.stocks.each do |stock| %>
+            <% Reservation.where(stock_id: stock.id).each do |reservation| %>
+              <% array = array.push(reservation.reservation_status_id) %>
+            <% end %>
+          <% end %>
+        <%= loaning_number = array.count(2) + array.count(3) %>
+        </td>
+        <td><%= book.stocks.count - loaning_number %></td>
       </tr>
     </tbody>
   <% end %>
@@ -48,11 +62,14 @@
         <th>タイトル</th>
         <th>著者</th>
         <th>状態</th>
-        <th>最終更新日</th>
       </tr>
     </thead>
     <tbody>
-      <% @reservations.each do |reservation| %>
+      <% @user_reservations.each do |reservation| %>
+        <% if reservation.reservation_status_id == 2 && reservation.updated_at + 15.days < Time.now %>
+          <% reservation.reservation_status_id = 3 %>
+          <% reservation.save %>
+        <% end %>
       <tr>
         <td><%= sprintf("%08d", reservation.stock.id) %></td>
         <td><%= link_to reservation.stock.book.title, users_book_path(reservation.stock.book_id) %></td>
@@ -62,14 +79,16 @@
           <% when 1 %>
             予約中
           <% when 2 %>
-            貸出し中
+            貸出し中<br>
+            返却期限:<%= (reservation.updated_at + 15.days).to_date %>
           <% when 3 %>
-            貸出し期限切れ
+            貸出し期限切れ<br>
+            <%= (Date.today - reservation.updated_at.to_date).to_i %>日オーバー
           <% when 4 %>
-            返却済み
+            返却済み<br>
+            返却日:<%= (reservation.updated_at).to_date %>
           <% end %>
         </td>
-        <td><%= reservation.updated_at %></td>
       </tr>
     </tbody>
   <% end %>

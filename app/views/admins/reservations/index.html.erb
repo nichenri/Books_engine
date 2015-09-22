@@ -1,0 +1,67 @@
+<h2>本の貸出し状態</h2>
+<p><%= link_to "図書検索画面へ戻る", admins_top_index_path %></p>
+
+<%= search_form_for @reservation_search, url: admins_reservations_path do |f| %>
+  <div class="field">
+    <%= f.label :user_name_cont, "ユーザ名" %>
+    <%= f.text_field :user_name_cont %><br>
+    <%= f.label :stock_id_eq, "図書番号" %>
+    <%= f.text_field :stock_id_eq %><br>
+    <%= f.label :stock_book_title_cont, "タイトル" %>
+    <%= f.text_field :stock_book_title_cont %><br>
+    <%= f.label :stock_book_author_author_name_cont, "著者" %>
+    <%= f.text_field :stock_book_author_author_name_cont %><br>
+    <%= f.label :reservation_status, "状態" %>
+    <%= f.select :reservation_status_id_eq, {"予約中" => "1", "貸出し中" => "2", "貸出し期限切れ" => "3", "返却済み" => "4"} %>
+  </div>
+  <div class="actions"><%= f.submit "Search" %></div>
+<% end %>
+
+<table rules="all">
+    <thead>
+      <tr>
+        <th>ユーザ</th>
+        <th>図書番号</th>
+        <th>タイトル</th>
+        <th>著者</th>
+        <th>状態</th>
+        <th>状態の変更</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @reservations.each do |reservation| %>
+        <% if reservation.reservation_status_id == 2 && reservation.updated_at + 15.days < Time.now %>
+          <% reservation.reservation_status_id = 3 %>
+          <% reservation.save %>
+        <% end %>
+        <tr>
+        <td><%= reservation.user.name %></td>
+        <td><%= sprintf("%08d", reservation.stock.id) %></td>
+        <td><%= reservation.stock.book.title %></td>
+        <td><%= reservation.stock.book.author.author_name %></td>
+        <td>
+          <% case reservation.reservation_status_id %>
+          <% when 1 %>
+            予約中
+          <% when 2 %>
+            貸出し中<br>
+            返却期限:<%= (reservation.updated_at + 15.days).to_date %>
+          <% when 3 %>
+            貸出し期限切れ<br>
+            <%= (Date.today - reservation.updated_at.to_date).to_i %>日オーバー
+          <% when 4 %>
+            返却済み<br>
+            返却日:<%= (reservation.updated_at).to_date %>
+          <% end %>
+        </td>
+        <td>
+          <%= form_for reservation, :url => admins_reservation_path(reservation.id) do |f| %>
+            <%= f.select :reservation_status_id, {"予約中" => "1", "貸出し中" => "2", "貸出し期限切れ" => "3", "返却済み" => "4"}%>
+            <%= f.submit :更新 %>
+          <% end %>
+        </td>
+      </tr>
+    </tbody>
+  <% end %>
+</table>
+

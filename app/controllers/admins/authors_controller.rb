@@ -10,7 +10,7 @@ class Admins::AuthorsController < Admins::ApplicationController
     @admin = current_admin
     @author = Author.new(author_params)
     if @author.save 
-      redirect_to admins_authors_path(@admin.id)
+      redirect_to admins_authors_path
     else 
       render 'new'
     end
@@ -22,7 +22,7 @@ class Admins::AuthorsController < Admins::ApplicationController
   def update
     @admin = current_admin
     if @author.update(author_params) 
-      redirect_to admins_authors_path(@admin.id)
+      redirect_to admins_authors_path
     else 
       render 'edit'
     end
@@ -30,7 +30,7 @@ class Admins::AuthorsController < Admins::ApplicationController
 
   def destroy
     @author.destroy
-      redirect_to admins_authors_path(@admin.id)
+      redirect_to admins_authors_path
   end
 
   private

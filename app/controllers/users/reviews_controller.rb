@@ -1,7 +1,8 @@
 class Users::ReviewsController < Users::ApplicationController
+  before_action :set_book
+  before_action :set_review, only: [:edit, :update, :destroy]
 
   def create
-    @book = Book.find(params[:book_id])
     @review = @book.reviews.new(review_params)
     if @review.save
       redirect_to users_book_path(@book.id)
@@ -11,13 +12,9 @@ class Users::ReviewsController < Users::ApplicationController
   end
 
   def edit
-    @book = Book.find(params[:book_id])
-    @review = @book.reviews.find(params[:id])
   end
 
   def update
-    @book = Book.find(params[:book_id])
-    @review = @book.reviews.find(params[:id])
     if @review.update(review_params)
       redirect_to users_book_path(@review.book_id)
     else
@@ -26,13 +23,19 @@ class Users::ReviewsController < Users::ApplicationController
   end
 
   def destroy
-    @book = Book.find(params[:book_id])
-    @review = @book.reviews.find(params[:id])
     @review.destroy
     redirect_to users_book_path(@review.book_id)
   end
 
   private 
+
+    def set_review
+      @review = @book.reviews.find(params[:id])
+    end
+
+    def set_book
+      @book = Book.find(params[:book_id])
+    end
 
     def review_params
       @user = current_user

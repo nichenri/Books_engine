@@ -2,22 +2,23 @@
 
 <p><%= link_to "図書の追加", new_admins_book_path %></p>
 <p><%= link_to "新規図書購入申請一覧", admins_new_books_path %></p>
+<p><%= link_to "図書貸出し状況", admins_reservations_path %></p>
+<p><%= link_to "ブックマーク状況", admins_bookmarks_path %></p>
 
 <h2>図書一覧</h2>
 
 
-<%= search_form_for @book_search, url: users_top_index_path do |f| %>
-  <%= f.condition_fields do |c| %>
+<%= search_form_for @book_search, url: admins_top_index_path do |f| %>
   <div class="field">
-    <%= c.attribute_fields do |a| %>
-      <%= a.attribute_select %>
-    <% end %>
-    <%= c.predicate_select %>
-    <%= c.value_fields do |v| %> 
-      <%= v.text_field :value %>
-    <% end %>
+    <%= f.label :title_cont, "タイトル" %>
+    <%= f.text_field :title_cont %><br>
+    <%= f.label :author_author_name_cont, "著者" %>
+    <%= f.text_field :author_author_name_cont %><br>
+    <%= f.label :publisher_publisher_name_cont, "出版社" %>
+    <%= f.text_field :publisher_publisher_name_cont %><br>
+    <%= f.label :genre_genre_name_cont, "分野" %>
+    <%= f.text_field :genre_genre_name_cont %><br>
   </div>
-  <% end %>
   <div class="actions"><%= f.submit "Search" %></div>
 <% end %>
 
@@ -27,7 +28,10 @@
         <th>タイトル</th>
         <th>著者</th>
         <th>出版社</th>
+        <th>分野</th>
         <th>保有冊数</th>
+        <th>貸出冊数</th>
+        <th>在庫冊数</th>
         <th>編集 削除 入荷</th>
       </tr>
     </thead>
@@ -38,7 +42,18 @@
         <td><%= link_to book.title, admins_book_path(book.id) %> </td>
         <td><%= book.author.author_name %></td>
         <td><%= book.publisher.publisher_name %></td>
+        <td><%= book.genre.genre_name %></td>
         <td><%= book.stocks.count %></td>
+        <% array = [] %>
+        <td>
+          <% book.stocks.each do |stock| %>
+            <% Reservation.where(stock_id: stock.id).each do |reservation| %>
+              <% array = array.push(reservation.reservation_status_id) %>
+            <% end %>
+          <% end %>
+        <%= loaning_number = array.count(2) + array.count(3) %>
+        </td>
+        <td><%= book.stocks.count - loaning_number %></td>
         <td>
           <%= link_to "編集", edit_admins_book_path(book.id) %> 
           <%= link_to "削除", admins_book_path(book.id), method: :delete, data: {confirm: "本当に削除しますか？"} %> 
@@ -46,84 +61,6 @@
             <%= f.submit :add %>
           <% end %>
         </td>
-      </tr>
-    </tbody>
-  <% end %>
-</table>
-
-<h2>本の貸出し状態</h2>
-<%= search_form_for @reservation_search, url: users_top_index_path do |f| %>
-  <%= f.condition_fields do |c| %>
-  <div class="field">
-    <%= c.attribute_fields do |a| %>
-      <%= a.attribute_select %>
-    <% end %>
-    <%= c.predicate_select %>
-    <%= c.value_fields do |v| %> 
-      <%= v.text_field :value %>
-    <% end %>
-  </div>
-  <% end %>
-  <div class="actions"><%= f.submit "Search" %></div>
-<% end %>
-<table rules="all">
-    <thead>
-      <tr>
-        <th>ユーザ</th>
-        <th>図書番号</th>
-        <th>タイトル</th>
-        <th>著者</th>
-        <th>状態</th>
-        <th>状態の変更</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @reservations.each do |reservation| %>
-        <tr>
-        <td><%= reservation.user.name %></td>
-        <td><%= reservation.stock.id %></td>
-        <td><%= reservation.stock.book.title %></td>
-        <td><%= reservation.stock.book.author.author_name %></td>
-        <td>
-          <% case reservation.reservation_status_id %>
-          <% when 1 %>
-            予約中
-          <% when 2 %>
-            貸出し中
-          <% when 3 %>
-            貸出し期限切れ
-          <% when 4 %>
-            返却済み
-          <% end %>
-        <td>
-          <%= form_for reservation, :url => admins_reservation_path(reservation.id) do |f| %>
-            <%= f.select :reservation_status_id, {"予約中" => "1", "貸出し中" => "2", "貸出し期限切れ" => "3", "返却済み" => "4"}%>
-            <%= f.submit :更新 %>
-          <% end %>
-        </td>
-        </td>
-      </tr>
-    </tbody>
-  <% end %>
-</table>
-
-<h2>ブックマークした本一覧</h2>
-<table rules="all">
-    <thead>
-      <tr>
-        <th>ユーザ</th>
-        <th>タイトル</th>
-        <th>著者</th>
-        <th>出版社</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @bookmarks.each do |bookmark| %>
-      <tr>
-        <td><%= bookmark.user.name %></td>
-        <td><%= bookmark.book.title %></td>
-        <td><%= bookmark.book.author.author_name %></td>
-        <td><%= bookmark.book.publisher.publisher_name %></td>
       </tr>
     </tbody>
   <% end %>
